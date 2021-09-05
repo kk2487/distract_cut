@@ -75,65 +75,65 @@ if __name__ == '__main__':
 	ret, frame = cap.read()
 	i = 1
 	series = []
-	frame_fps5_num = 0
+
 	while(ret):
-		if(frame_fps5_num%6==0):
-			#frame = cv2.rotate(frame, cv2.cv2.ROTATE_90_CLOCKWISE)
-			#gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-			#draw = gray.copy()
-			#series.append(gray)
-			draw = frame.copy()
-
-			#調整訓練圖片大小
-			frame = cv2.resize(frame, imgSize)
-			gray_frame = cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
-
-			data = {'A': cut_transform(Image.fromarray(gray_frame)).unsqueeze(0),'B':ts_b, 'A_paths': ['doesnt_really_matter'], 'B_paths': ['doesnt_really_matter']} 
-
-			cut_model.set_input(data)  # unpack data from data loader
-			cut_model.test()           # run inference
-			visuals = cut_model.get_current_visuals()  # get image results
-
-			im_data = list(visuals.items())[1][1] # grabbing the important part of the result
-			cg_im = tensor2im(im_data)  # convert tensor to image
-
-			cg_im = cv2.resize(cg_im, (224,224))
-
-			series.append(cg_im)
-			
-
-			for c in range(len(classes)):
-				cv2.putText(draw,str(c)+":"+classes[c],(20,20+c*40),cv2.FONT_HERSHEY_COMPLEX_SMALL,1.2,(255),1)
-			cv2.putText(draw,str(len(classes))+":"+"X",(20,20+len(classes)*40),cv2.FONT_HERSHEY_COMPLEX_SMALL,1.2,(255),1)
-			draw = cv2.resize(draw, (int(2*draw.shape[1]/3), int(2*draw.shape[0]/3)))
-			cv2.imshow("src", draw)
-			cv2.imshow("cg_im", cg_im)
-
-			if(i%num_frame == 0):
-				class_index = input()
-				if(class_index == 'q'):
-					exit(0)
-				class_index = int(class_index)
-				if(class_index<len(classes)):
-					path = "./dataset/"+str(classes[class_index])
-					file_num = len([lists for lists in os.listdir(path) if os.path.isdir(os.path.join(path, lists))])
-					print("---",file_num+1)
-					os.makedirs(path+"/"+str(classes[class_index])+"_"+str(file_num+1).zfill(6))
-					for n in range(num_frame):
-						#存圖片時檔名數字須從1開始(3Dresnet從編號1開始讀取)
-						path = "./dataset/"+str(classes[class_index])+"/"+str(classes[class_index])+"_"+str(file_num+1).zfill(6)+"/"+"image_"+str(n+1).zfill(5)+".jpg"
-						cv2.imwrite(path, series[n])
-
-				series = []
-			if cv2.waitKey(1) & 0xFF == ord('q'):
-				cap.release()
-				cv2.destroyAllWindows()
-				break
-			i = i + 1
 		ret, frame = cap.read()
-		frame_fps5_num = frame_fps5_num+1
-	cap.release()
-	cv2.destroyAllWindows()
+		#frame = cv2.rotate(frame, cv2.cv2.ROTATE_90_CLOCKWISE)
+		#gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+		#draw = gray.copy()
+		#series.append(gray)
+		draw = frame.copy()
+
+		#調整訓練圖片大小
+		frame = cv2.resize(frame, imgSize)
+		gray_frame = cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
+
+		data = {'A': cut_transform(Image.fromarray(gray_frame)).unsqueeze(0),'B':ts_b, 'A_paths': ['doesnt_really_matter'], 'B_paths': ['doesnt_really_matter']} 
+
+		cut_model.set_input(data)  # unpack data from data loader
+		cut_model.test()           # run inference
+		visuals = cut_model.get_current_visuals()  # get image results
+
+		im_data = list(visuals.items())[1][1] # grabbing the important part of the result
+		cg_im = tensor2im(im_data)  # convert tensor to image
+
+		cg_im = cv2.resize(cg_im, (224,224))
+
+		series.append(cg_im)
+		
+
+		for c in range(len(classes)):
+			cv2.putText(draw,str(c)+":"+classes[c],(20,20+c*40),cv2.FONT_HERSHEY_COMPLEX_SMALL,1.2,(255),1)
+		cv2.putText(draw,str(len(classes))+":"+"X",(20,20+len(classes)*40),cv2.FONT_HERSHEY_COMPLEX_SMALL,1.2,(255),1)
+		draw = cv2.resize(draw, (int(2*draw.shape[1]/3), int(2*draw.shape[0]/3)))
+		cv2.imshow("src", draw)
+		cv2.imshow("cg_im", cg_im)
+
+		if(i%num_frame == 0):
+			class_index = input()
+			if(class_index == 'q'):
+				exit(0)
+			class_index = int(class_index)
+			if(class_index<len(classes)):
+				path = "./dataset/"+str(classes[class_index])
+				file_num = len([lists for lists in os.listdir(path) if os.path.isdir(os.path.join(path, lists))])
+				print("---",file_num+1)
+				os.makedirs(path+"/"+str(classes[class_index])+"_"+str(file_num+1).zfill(6))
+				for n in range(num_frame):
+					#存圖片時檔名數字須從1開始(3Dresnet從編號1開始讀取)
+					path = "./dataset/"+str(classes[class_index])+"/"+str(classes[class_index])+"_"+str(file_num+1).zfill(6)+"/"+"image_"+str(n+1).zfill(5)+".jpg"
+					cv2.imwrite(path, series[n])
+
+			series = []
+		if cv2.waitKey(1) & 0xFF == ord('q'):
+			cap.release()
+			cv2.destroyAllWindows()
+			break
+		i = i + 1
+	
+	
+cap.release()
+cv2.destroyAllWindows()
 
 		
 		

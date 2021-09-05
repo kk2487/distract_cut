@@ -147,7 +147,7 @@ class Qt(QWidget):
 
         opt = QFileDialog.Options()
         opt |= QFileDialog.DontUseNativeDialog
-        fileUrl = QFileDialog.getOpenFileName(self,"Input Video", "./test_video","Mp4 (*.mp4)", options=opt)
+        fileUrl = QFileDialog.getOpenFileName(self,"Input Video", "C:/Users/hongze/Desktop/night/crop","Mp4 (*.mp4)", options=opt)
     
         return fileUrl[0]
 
